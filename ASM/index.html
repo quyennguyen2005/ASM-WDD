@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQStudio - Máy ảnh & Ống kính</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" style="text-decoration: none; color: inherit;">
+        <div class="logo">HQStudio</div>
+        </a>
+        <!-- XÓA categorySelect ở đây -->
+        <select id="brandSelect" style="padding:0.4rem 1rem;border-radius:4px;border:none;min-width:120px;max-width:180px;outline:none;margin-right:1rem;">
+            <option value="">Tất cả thương hiệu</option>
+        </select>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." style="padding:0.4rem 1rem;border-radius:4px;border:none;min-width:200px;max-width:300px;outline:none;" />
+        <button id="orderHistoryBtn" style="margin-left:1rem;padding:0.4rem 1rem;border-radius:4px;border:none;background:#27ae60;color:#fff;cursor:pointer;">Đơn hàng đã đặt</button>
+        <div class="cart" id="cartBtn">
+            🛒 Giỏ hàng <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <button id="loginBtn" style="margin-right:1rem;padding:0.4rem 1rem;border-radius:4px;border:none;background:#2980b9;color:#fff;cursor:pointer;">Đăng nhập/Đăng ký</button>
+    </div>
+    <div class="main-banner">
+        <div class="main-banner-content">
+            <h1>HQStudio - Máy ảnh & Ống kính Chính Hãng</h1>
+            <p>Chuyên cung cấp máy ảnh, ống kính, phụ kiện chính hãng, giá tốt nhất thị trường!</p>
+            <a href="#products" class="banner-cta">Khám phá sản phẩm</a>
+        </div>
+    </div>
+    <!-- THÊM SIDEBAR BÊN TRÁI -->
+    <div style="display:flex;align-items:flex-start;gap:2rem;">
+        <div class="sidebar-left" style="min-width:180px;">
+            <select id="categorySelect" style="padding:0.4rem 1rem;border-radius:4px;border:none;min-width:120px;max-width:180px;outline:none;margin-bottom:1rem;width:100%;">
+                <option value="">Tất cả danh mục</option>
+                <option value="camera">Máy ảnh</option>
+                <option value="lens">Ống kính</option>
+                <option value="accessory">Phụ kiện</option>
+                <option value="printer">Máy in</option>
+            </select>
+        </div>
+        <div class="products" id="products" style="flex:1;">
+            <!-- Sản phẩm sẽ được render bằng JavaScript -->
+        </div>
+    </div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <button class="close-cart" id="closeCart">Đóng</button>
+            <h2>Giỏ hàng</h2>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-total" id="cartTotal"></div>
+            <button class="add-to-cart" id="checkoutBtn" style="width:100%;margin-top:1rem;">Xác nhận mua hàng</button>
+        </div>
+    </div>
+    <div class="cart-modal" id="orderModal">
+        <div class="cart-content">
+            <button class="close-cart" id="closeOrder">Đóng</button>
+            <h2>Xác nhận đơn hàng</h2>
+            <form id="orderForm" onsubmit="return false;" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label>Họ tên người nhận:<br><input type="text" id="customerName" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Địa chỉ:<br><input type="text" id="customerAddress" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Số điện thoại:<br><input type="tel" id="customerPhone" required pattern="[0-9]{9,12}" style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <div class="cart-items" id="orderItems"></div>
+                <label>Voucher giảm giá:
+                    <select id="voucherSelect" style="margin-left:0.5rem;padding:0.3rem;">
+                        <option value="0">Không áp dụng</option>
+                        <option value="0.15">Giảm 15%</option>
+                        <option value="0.2">Giảm 20%</option>
+                    </select>
+                </label>
+                <label>Phương thức thanh toán:<br>
+                    <input type="radio" name="payment" value="COD" checked> Thanh toán khi nhận hàng
+                    <input type="radio" name="payment" value="Credit" style="margin-left:1.5rem;"> Thẻ tín dụng
+                </label>
+                <div class="cart-total" id="orderTotal"></div>
+                <button class="add-to-cart" id="confirmOrderBtn" style="width:100%;margin-top:0.5rem;">Xác nhận đặt hàng</button>
+            </form>
+        </div>
+    </div>
+    <div class="cart-modal" id="historyModal">
+        <div class="cart-content">
+            <button class="close-cart" id="closeHistory">Đóng</button>
+            <h2>Đơn hàng đã đặt</h2>
+            <div id="historyContent"></div>
+            <div style="display:flex;gap:1rem;margin-top:1rem;">
+                <button class="add-to-cart" id="cancelOrderBtn" style="flex:1;background:#e74c3c;">Hủy đơn hàng</button>
+                <button class="add-to-cart" id="confirmReceivedBtn" style="flex:1;background:#27ae60;">Xác nhận đã nhận hàng</button>
+            </div>
+        </div>
+    </div>
+    <div class="cart-modal" id="authModal">
+        <div class="cart-content" style="min-width:340px;max-width:95vw;">
+            <button class="close-cart" id="closeAuth" title="Đóng">&times;</button>
+            <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                <button id="tabLogin" style="flex:1;background:#2d3e50;color:#fff;border:none;padding:0.5rem 0;border-radius:4px 0 0 4px;cursor:pointer;">Đăng nhập</button>
+                <button id="tabRegister" style="flex:1;background:#eee;color:#2d3e50;border:none;padding:0.5rem 0;border-radius:0 4px 4px 0;cursor:pointer;">Đăng ký</button>
+            </div>
+            <form id="loginForm" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label>Email:<br><input type="email" id="loginEmail" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Mật khẩu:<br><input type="password" id="loginPassword" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <button class="add-to-cart" type="submit" style="width:100%;margin-top:0.5rem;">Đăng nhập</button>
+            </form>
+            <form id="registerForm" style="display:none;flex-direction:column;gap:0.7rem;">
+                <label>Họ tên:<br><input type="text" id="registerName" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Email:<br><input type="email" id="registerEmail" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Mật khẩu:<br><input type="password" id="registerPassword" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Xác nhận mật khẩu:<br><input type="password" id="registerPassword2" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <button class="add-to-cart" type="submit" style="width:100%;margin-top:0.5rem;">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+    <div class="cart-modal" id="profileModal">
+        <div class="cart-content" style="min-width:400px;max-width:95vw;">
+            <button class="close-cart" id="closeProfile" title="Đóng">&times;</button>
+            <h2>👤 Hồ sơ tài khoản</h2>
+            <form id="profileForm" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label>Họ tên:<br><input type="text" id="profileName" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Email:<br><input type="email" id="profileEmail" required style="width:100%;padding:0.4rem;margin-top:2px;" readonly></label>
+                <label>Số điện thoại:<br><input type="tel" id="profilePhone" pattern="[0-9]{9,12}" style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Địa chỉ:<br><textarea id="profileAddress" rows="3" style="width:100%;padding:0.4rem;margin-top:2px;resize:vertical;"></textarea></label>
+                <label>Ngày sinh:<br><input type="date" id="profileBirthday" style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Giới tính:<br>
+                    <select id="profileGender" style="width:100%;padding:0.4rem;margin-top:2px;">
+                        <option value="">Chọn giới tính</option>
+                        <option value="male">Nam</option>
+                        <option value="female">Nữ</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </label>
+                <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                    <button class="add-to-cart" type="submit" style="flex:1;">Cập nhật thông tin</button>
+                    <button type="button" id="changePasswordBtn" style="flex:1;background:#f39c12;color:#fff;border:none;padding:0.5rem;border-radius:4px;cursor:pointer;">Đổi mật khẩu</button>
+                </div>
+                <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+                    <button type="button" id="logoutBtn" style="flex:1;background:#e74c3c;color:#fff;border:none;padding:0.5rem;border-radius:4px;cursor:pointer;">Đăng xuất</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="cart-modal" id="passwordModal">
+        <div class="cart-content" style="min-width:340px;max-width:95vw;">
+            <button class="close-cart" id="closePassword" title="Đóng">&times;</button>
+            <h2>🔒 Đổi mật khẩu</h2>
+            <form id="passwordForm" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label>Mật khẩu hiện tại:<br><input type="password" id="currentPassword" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Mật khẩu mới:<br><input type="password" id="newPassword" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <label>Xác nhận mật khẩu mới:<br><input type="password" id="confirmNewPassword" required style="width:100%;padding:0.4rem;margin-top:2px;"></label>
+                <button class="add-to-cart" type="submit" style="width:100%;margin-top:0.5rem;">Đổi mật khẩu</button>
+            </form>
+        </div>
+    </div>
+    <script src="main.js"></script>
+    <footer class="footer-contact">
+      <div class="footer-container">
+        <div class="footer-col company">
+          <b>CÔNG TY CỔ PHẦN THƯƠNG MẠI DỊCH VỤ CÔNG NGHỆ SỐ HQSTUDIO</b><br>
+          <span style="display:inline-block;margin:0.3em 0;">&#128222; 0123.456.789 </span><br>
+          <span style="display:inline-block;margin:0.3em 0;">&#128241; 0123.456.789 </span><br>
+          <b>Địa chỉ:</b> 21/ngõ Khoang Mụn, Thôn Thái Bình, Xã Hạ Bằng, Huyện Thạch Thất, TP. Hà Nội<br>
+          <span style="font-size:0.97em;">Làm việc tất cả các ngày trong tuần Thứ 2 đến Thứ 7: 9h đến 19h30 Chủ Nhật và Ngày Lễ: 9h đến 18h</span>
+        </div>
+        <div class="footer-col policy">
+          <b>CHÍNH SÁCH</b>
+          <ul>
+            <li>Hỗ trợ khách hàng</li>
+            <li>Chính sách vận chuyển</li>
+            <li>Chính sách bảo hành</li>
+            <li>Check Shot Sony và Kiểm tra Bảo Hành</li>
+          </ul>
+        </div>
+        <div class="footer-col service">
+          <b>Dịch vụ</b>
+          <ul>
+            <li>Liên hệ</li>
+            <li>Sửa máy ảnh và ống kính</li>
+          </ul>
+          <b style="margin-top:1em;display:block;">Giấy chứng nhận đăng ký kinh doanh</b>
+          <div style="font-size:0.97em;">
+            Mã số doanh nghiệp: 0123456789<br>
+            Cấp bởi: SỞ KẾ HOẠCH VÀ ĐẦU TƯ THÀNH PHỐ Hà Nội<br>
+            Ngày cấp: 10/10/2025
+          </div>
+        </div>
+        <div class="footer-col customer">
+          <b>Chăm sóc khách hàng</b>
+          <ul>
+            <li>Thương hiệu</li>
+            <li>Sơ đồ trang</li>
+          </ul>
+          <b style="margin-top:1em;display:block;">Quản lý tài khoản</b>
+          <ul>
+            <li>Quản lý Tài khoản</li>
+            <li>Lịch sử đơn hàng</li>
+          </ul>
+          <div class="footer-badges">
+            <img src="https://www.dmca.com/img/dmca-badge-w200-5x1-01.png" alt="DMCA" style="height:32px;margin:0.5em 0;">
+            <img src="https://www.giaonhan247.com/wp-content/uploads/2021/07/da-thong-bao-bo-cong-thuong.png" alt="Bộ Công Thương" style="height:32px;margin:0.5em 0;">
+          </div>
+        </div>
+      </div>
+      <div class="footer-social">
+        <a href="#" class="footer-social-btn" title="Gọi điện">&#128222;</a>
+        <a href="#" class="footer-social-btn" title="Messenger"><img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Facebook_Messenger_4_Logo.svg" alt="Messenger" style="height:24px;vertical-align:middle;"></a>
+        <a href="#" class="footer-social-btn" title="Zalo"><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" style="height:24px;vertical-align:middle;"></a>
+      </div>
+    </footer>
+</body>
+</html>
